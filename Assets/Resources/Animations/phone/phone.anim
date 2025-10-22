@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EyeOpened
+  m_Name: phone
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,7 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 510f418233e645145924547141bf13f2, type: 3}
+      value: {fileID: 21300000, guid: fee7014f71d7a174d8e66b9a903be0af, type: 3}
+    - time: 1.95
+      value: {fileID: 21300000, guid: 9694b2f8f11d51f45a377b6fcb857237, type: 3}
+    - time: 5.0333333
+      value: {fileID: 21300000, guid: 9694b2f8f11d51f45a377b6fcb857237, type: 3}
+    - time: 9
+      value: {fileID: 21300000, guid: fee7014f71d7a174d8e66b9a903be0af, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -44,13 +50,16 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 510f418233e645145924547141bf13f2, type: 3}
+    - {fileID: 21300000, guid: fee7014f71d7a174d8e66b9a903be0af, type: 3}
+    - {fileID: 21300000, guid: 9694b2f8f11d51f45a377b6fcb857237, type: 3}
+    - {fileID: 21300000, guid: 9694b2f8f11d51f45a377b6fcb857237, type: 3}
+    - {fileID: 21300000, guid: fee7014f71d7a174d8e66b9a903be0af, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.016666668
+    m_StopTime: 9.016666
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
