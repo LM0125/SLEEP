@@ -7,6 +7,8 @@ public class BubbleSpawner : MonoBehaviour
     public Transform spawnPoint;
     public Bubble currentControllableBubble;
 
+    public float spawnRate;
+
     void Start()
     {
         // 检查是否拖入了3种预制体

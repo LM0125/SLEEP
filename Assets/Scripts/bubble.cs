@@ -35,20 +35,10 @@ public class Bubble : MonoBehaviour
         // 其他情况：完全不处理，保留物理移动
     }
 
-    // 触顶就锁死
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.name == "TopTrigger")
-        {
-            LockThisBubble();
-        }
-    }
-
     // 碰任何气泡就锁死（不管标签，暴力检测）
     void OnCollisionEnter2D(Collision2D other)
     {
-        // 只要碰撞的是气泡（通过是否有Bubble组件判断，不用标签）
-        if (other.gameObject.GetComponent<Bubble>() != null)
+        if (other.transform.tag == "topWall" || other.transform.tag == "Bubble")
         {
             LockThisBubble();
         }
