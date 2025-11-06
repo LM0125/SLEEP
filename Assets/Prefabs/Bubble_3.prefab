@@ -186,7 +186,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1
   horizontalSpeed: 5
+  bubbleType: 0
+  controlRatio: 1
   isLocked: 0
+  maxControlCount: 3
 --- !u!114 &-1550307891025240038
 MonoBehaviour:
   m_ObjectHideFlags: 0
