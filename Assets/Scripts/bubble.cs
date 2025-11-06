@@ -92,7 +92,7 @@ public class Bubble : MonoBehaviour
             Destroy(gameObject);
             // 触发生成新泡泡（与锁定时逻辑一致）
             BubbleSpawner spawner = FindObjectOfType<BubbleSpawner>();
-            if (spawner.currentControllableBubble == this)
+            //if (spawner.currentControllableBubble == this)
             {
                 spawner.currentControllableBubble = null;
                 OnNeedNewBubble?.Invoke();
@@ -103,9 +103,11 @@ public class Bubble : MonoBehaviour
     // 保留原有的碰撞墙壁逻辑
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.transform.tag == "topWall" || other.transform.tag == "Bubble")
+        if (other.transform.tag == "topWall")
         {
-            LockThisBubble();
+            BubbleSpawner spawner = FindObjectOfType<BubbleSpawner>();
+            spawner.currentControllableBubble = null;
+            OnNeedNewBubble?.Invoke();
         }
     }
 
@@ -118,7 +120,7 @@ public class Bubble : MonoBehaviour
         if (spawner.currentControllableBubble == this)
         {
             spawner.currentControllableBubble = null;
-            OnNeedNewBubble?.Invoke(); // 生成新的
+            //OnNeedNewBubble?.Invoke(); // 生成新的
         }
     }
 }
