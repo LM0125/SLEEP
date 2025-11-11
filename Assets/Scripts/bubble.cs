@@ -42,7 +42,7 @@ public class Bubble : MonoBehaviour
                 controlRatio = 0.8f; // 80%控制灵敏度
                 break;
             case BubbleType.Bubble_2:
-                controlRatio = 0.3f; // 30%控制灵敏度
+                controlRatio = 0.2f; // 20%控制灵敏度
                 break;
             default:
                 controlRatio = 1f; // 默认100%

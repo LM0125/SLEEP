@@ -12,7 +12,7 @@ public class BubbleSpawner : MonoBehaviour
     void Start()
     {
         // 检查是否拖入了3种预制体
-        if (bubblePrefabs.Length < 3)
+        if (bubblePrefabs.Length < 2)
         {
             Debug.LogError("请拖入3种颜色的气泡预制体！");
             return;
