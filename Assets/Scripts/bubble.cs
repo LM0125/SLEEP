@@ -51,6 +51,8 @@ public class Bubble : MonoBehaviour
     }
     void Update()
     {
+
+        
         isCurrentControllable = FindObjectOfType<BubbleSpawner>().currentControllableBubble == this;
 
         if (!isLocked && isCurrentControllable && !hasReachedMaxControl)
