@@ -118,11 +118,13 @@ public class LevelController : MonoBehaviour
             if (isLeftWind)
             {
                 leftWindEffect?.SetActive(true);
+                leftWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
                 leftWindEffect.transform.GetComponent<DOTweenAnimation>().DOPlay();
             }
             else
             {
                 rightWindEffect?.SetActive(true);
+                rightWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
                 rightWindEffect.transform.GetComponent<DOTweenAnimation>().DOPlay();
             }
         }
