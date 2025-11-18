@@ -11564,7 +11564,7 @@ MonoBehaviour:
   rainnyBoard: {fileID: 1769771551}
   snowingBoard: {fileID: 1392137205}
   curBoard: {fileID: 0}
-  curLevel: 0
+  curLevel: 2
   timer: 0
   intervalTime: 0
   bubbleCounter: 0
