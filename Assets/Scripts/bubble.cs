@@ -17,8 +17,18 @@ public class Bubble : MonoBehaviour
     private int currentControlCount = 0; // 当前已控制次数
     private bool hasReachedMaxControl = false; // 是否达到最大控制次数
     private bool isCountedThisControl = false;
-    
 
+    private bool isReversControl;
+
+    public void ReverseControl()
+    {
+        isReversControl = true;
+    }
+    public void RecoverControl()
+    {
+        isReversControl = false;
+    }
+    public bool IsReversing() { return isReversControl; }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -55,6 +65,10 @@ public class Bubble : MonoBehaviour
 
             float actualHorizontalSpeed = horizontalSpeed * controlRatio;
             Vector2 windForce = FindObjectOfType<LevelController>().GetWindForce();
+
+            if (isReversControl)
+                h = -h;
+
             rb.velocity = new Vector2(h * actualHorizontalSpeed + windForce.x, moveSpeed);
 
             // 横向移动计数逻辑

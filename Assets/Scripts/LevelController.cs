@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +53,11 @@ public class LevelController : MonoBehaviour
     private List<Vector2> lightningPositions = new List<Vector2>();
     // 关卡UI面板
 
-   
+    [Header("Reverse计时器")]
+    public float reverseTimer;
+    public float reverseIntervalTime;
+    public float reverseStayTime;
+    public BubbleSpawner bs;
 
 
     void Start()
@@ -89,6 +94,7 @@ public class LevelController : MonoBehaviour
 
         {
             timer += Time.deltaTime;
+            reverseTimer += Time.deltaTime;
         }
     }
    
@@ -112,10 +118,12 @@ public class LevelController : MonoBehaviour
             if (isLeftWind)
             {
                 leftWindEffect?.SetActive(true);
+                leftWindEffect.transform.GetComponent<DOTweenAnimation>().DOPlay();
             }
             else
             {
                 rightWindEffect?.SetActive(true);
+                rightWindEffect.transform.GetComponent<DOTweenAnimation>().DOPlay();
             }
         }
 
@@ -127,6 +135,8 @@ public class LevelController : MonoBehaviour
             intervalTime = Random.Range(1.0f, 5.0f); // 随机下一次风的间隔
 
             // 隐藏风效果
+            //leftWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
+            //rightWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
             leftWindEffect?.SetActive(false);
             rightWindEffect?.SetActive(false);
         }
@@ -163,6 +173,20 @@ public class LevelController : MonoBehaviour
                 // 启动协程，在闪电持续时间后重置状态
                 StartCoroutine(DeactivateLightningAfterDelay(lightningDuration));
             }
+        }
+
+        if (reverseTimer > reverseIntervalTime)
+        {
+            // show up some sprites event
+            bs.ReversCurBubbleControl();
+            reverseTimer = 0.0f;
+        }
+
+        if (bs.IsCurReversing() && reverseTimer > reverseStayTime)
+        {
+            // show up some sprites event
+            bs.RecoverCurBubbleControl();
+            reverseTimer = 0.0f;
         }
     }
 

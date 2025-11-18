@@ -6,6 +6,7 @@ public class BubbleSpawner : MonoBehaviour
     public Transform spawnPoint;
     public Bubble currentControllableBubble;
     public float spawnRate;
+    public bool isCurReversing;
 
     void Start()
     {
@@ -16,7 +17,20 @@ public class BubbleSpawner : MonoBehaviour
         }
         SpawnNewBubble();
     }
-
+    public void ReversCurBubbleControl()
+    {
+        //currentControllableBubble.ReverseControl();
+        isCurReversing = true;
+    }
+    public void RecoverCurBubbleControl()
+    {
+        //currentControllableBubble.RecoverControl();
+        isCurReversing = false;
+    }
+    public bool IsCurReversing()
+    {
+        return isCurReversing;
+    }
     void SpawnNewBubble()
     {
         if (spawnPoint != null)
@@ -37,7 +51,18 @@ public class BubbleSpawner : MonoBehaviour
     {
         SpawnNewBubble();
     }
+    private void Update()
+    {
+        if(isCurReversing && !currentControllableBubble.IsReversing())
+        {
+            currentControllableBubble.ReverseControl();
+        }
 
+        if (!isCurReversing && currentControllableBubble.IsReversing())
+        {
+            currentControllableBubble.RecoverControl();
+        }
+    }
     void OnEnable()
     {
         Bubble.OnNeedNewBubble += OnNeedNewBubble;
