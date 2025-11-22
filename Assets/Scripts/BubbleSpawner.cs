@@ -12,37 +12,55 @@ public class BubbleSpawner : MonoBehaviour
     {
         if (bubblePrefabs.Length < 2)
         {
-            Debug.LogError("请至少添加2个气泡预制体!");
+            Debug.LogError("需要至少2个气泡预制体!");
             return;
         }
         SpawnNewBubble();
     }
+
+    // 反转当前气泡控制
     public void ReversCurBubbleControl()
     {
-        //currentControllableBubble.ReverseControl();
-        isCurReversing = true;
+        if (currentControllableBubble != null)
+        {
+            currentControllableBubble.ReverseControl();
+            isCurReversing = true;
+        }
     }
+
+    // 恢复当前气泡控制
     public void RecoverCurBubbleControl()
     {
-        //currentControllableBubble.RecoverControl();
-        isCurReversing = false;
+        if (currentControllableBubble != null)
+        {
+            currentControllableBubble.RecoverControl();
+            isCurReversing = false;
+        }
     }
+
     public bool IsCurReversing()
     {
         return isCurReversing;
     }
+
     void SpawnNewBubble()
     {
-        if (spawnPoint != null)
+        if (spawnPoint != null && bubblePrefabs.Length > 0)
         {
             int randomIndex = Random.Range(0, bubblePrefabs.Length);
             GameObject selectedPrefab = bubblePrefabs[randomIndex];
 
             GameObject newBubble = Instantiate(selectedPrefab, spawnPoint.position, Quaternion.identity);
             currentControllableBubble = newBubble.GetComponent<Bubble>();
+
+            // 如果正在反转状态，新生成的气泡也应该保持反转
             if (currentControllableBubble != null)
             {
                 currentControllableBubble.isLocked = false;
+                if (isCurReversing)
+                {
+                    currentControllableBubble.ReverseControl();
+                }
             }
         }
     }
@@ -51,18 +69,7 @@ public class BubbleSpawner : MonoBehaviour
     {
         SpawnNewBubble();
     }
-    private void Update()
-    {
-        if(isCurReversing && !currentControllableBubble.IsReversing())
-        {
-            currentControllableBubble.ReverseControl();
-        }
 
-        if (!isCurReversing && currentControllableBubble.IsReversing())
-        {
-            currentControllableBubble.RecoverControl();
-        }
-    }
     void OnEnable()
     {
         Bubble.OnNeedNewBubble += OnNeedNewBubble;

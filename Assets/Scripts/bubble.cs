@@ -4,9 +4,13 @@ using System;
 public class Bubble : MonoBehaviour
 {
     public static event Action OnNeedNewBubble;
+    public static event Action OnBubbleExit; // 新增：气泡到达出口事件
+    public static event Action OnBubbleLocked; // 新增：气泡被固化事件
+
     public float moveSpeed = 0.5f;
     public float horizontalSpeed = 5f;
-    // 气泡类型会影响控制效果
+
+    // 气泡类型影响控制效果
     public enum BubbleType { Default, Bubble_1, Bubble_2 }
     public BubbleType bubbleType = BubbleType.Default;
     [Range(0f, 2f)] public float controlRatio = 1f;
@@ -29,6 +33,7 @@ public class Bubble : MonoBehaviour
         isReversControl = false;
     }
     public bool IsReversing() { return isReversControl; }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -71,7 +76,7 @@ public class Bubble : MonoBehaviour
 
             rb.velocity = new Vector2(h * actualHorizontalSpeed + windForce.x, moveSpeed);
 
-            // 横向移动计数逻辑
+            // 控制次数计数逻辑
             if (Mathf.Abs(h) > 0.1f)
             {
                 if (!isCountedThisControl)
@@ -91,8 +96,6 @@ public class Bubble : MonoBehaviour
             {
                 isCountedThisControl = false;
             }
-            
-            
         }
     }
 
@@ -106,6 +109,7 @@ public class Bubble : MonoBehaviour
             {
                 spawner.currentControllableBubble = null;
                 OnNeedNewBubble?.Invoke();
+                OnBubbleExit?.Invoke(); // 触发气泡到达出口事件
             }
         }
     }
@@ -126,7 +130,7 @@ public class Bubble : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            sr.color = new Color(0f, 0f, 0f); 
+            sr.color = new Color(0f, 0f, 0f);
         }
         if (rb != null)
         {
@@ -137,7 +141,8 @@ public class Bubble : MonoBehaviour
         if (spawner.currentControllableBubble == this)
         {
             spawner.currentControllableBubble = null;
-            OnNeedNewBubble?.Invoke(); // 生成新气泡
+            OnNeedNewBubble?.Invoke();
+            OnBubbleLocked?.Invoke(); // 触发气泡被固化事件
         }
     }
 }

@@ -13,30 +13,33 @@ public enum Level
 
 public class LevelController : MonoBehaviour
 {
-    [Header("面板")]
-    public GameObject sunnyBoard;   // 晴天面板
-    public GameObject rainnyBoard;  // 雨天面板
-    public GameObject snowingBoard; // 雪天面板
-    public GameObject curBoard;     // 当前显示的面板
+    public MoodBarUI moodBarUI; // 情绪条UI引用
+
+    [Header("背景")]
+    public GameObject sunnyBoard;   // 晴天背景
+    public GameObject rainnyBoard;  // 雨天背景
+    public GameObject snowingBoard; // 雪天背景
+    public GameObject curBoard;     // 当前显示背景
     public Level curLevel = Level.Lvl1; // 当前关卡
+
     [Header("计时器")]
     public float timer;
     public float intervalTime;
     public int bubbleCounter;       // 气泡计数器
     public float curPassingTime;    // 当前关卡经过时间
 
-    [Header("第一关设置")]
-    public bool isWindOn = false;       // 风是否激活
+    [Header("第一关元素")]
+    public bool isWindOn = false;       // 是否刮风
     public GameObject leftWindEffect;   // 左侧风效果
     public GameObject rightWindEffect;  // 右侧风效果
     public float windForce = 5f;        // 风力大小
     private bool isLeftWind = false;    // 当前是否为左侧风
-    
-    public float windStayTime;
-   
 
-    [Header("第二关设置")]
-    public bool isLightningActive = false; // 标记当前是否处于闪电生效阶段
+    public float windStayTime;
+
+
+    [Header("第二关元素")]
+    public bool isLightningActive = false; // 标记当前是否在闪电效果阶段
     private List<LightningWarning> activeWarnings = new List<LightningWarning>();
     public float lightningInterval = 30f;   // 闪电间隔时间
     public float lightningWarningTime = 2f; // 预警时间
@@ -51,7 +54,6 @@ public class LevelController : MonoBehaviour
     private float warningTimer;
     private bool isWarning;
     private List<Vector2> lightningPositions = new List<Vector2>();
-    // 关卡UI面板
 
     [Header("Reverse计时器")]
     public float reverseTimer;
@@ -60,8 +62,19 @@ public class LevelController : MonoBehaviour
     public BubbleSpawner bs;
 
 
+
     void Start()
     {
+        // 自动查找情绪条UI（如果未手动指定）
+        if (moodBarUI == null)
+        {
+            moodBarUI = FindObjectOfType<MoodBarUI>();
+        }
+
+        // 订阅气泡事件
+        Bubble.OnBubbleExit += HandleBubbleExit;
+        Bubble.OnBubbleLocked += HandleBubbleLocked;
+
         curBoard = sunnyBoard;
         ChangeLevel(curLevel);
 
@@ -77,6 +90,31 @@ public class LevelController : MonoBehaviour
         isWarning = false;
     }
 
+    // 处理气泡到达出口事件
+    private void HandleBubbleExit()
+    {
+        if (moodBarUI != null)
+        {
+            moodBarUI.IncreaseMood(1); // 增加1格情绪值
+        }
+    }
+
+    // 处理气泡被固化事件
+    private void HandleBubbleLocked()
+    {
+        if (moodBarUI != null)
+        {
+            moodBarUI.DecreaseMood(1); // 减少1格情绪值
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 取消订阅事件，防止内存泄漏
+        Bubble.OnBubbleExit -= HandleBubbleExit;
+        Bubble.OnBubbleLocked -= HandleBubbleLocked;
+    }
+
     void Update()
     {
         switch (curLevel)
@@ -88,31 +126,29 @@ public class LevelController : MonoBehaviour
                 HandleLevel2Logic();
                 break;
             case Level.Lvl3:
-                
                 break;
+
         }
 
         {
             timer += Time.deltaTime;
             reverseTimer += Time.deltaTime;
+            curPassingTime += Time.deltaTime; // 更新关卡经过时间
         }
     }
-   
 
-    // 结束控制互换
-    
 
     /// <summary>
-    /// 处理第一关逻辑（风系统）
+    /// 处理第一关逻辑系统
     /// </summary>
     private void HandleLevel1Logic()
     {
         if (!isWindOn && timer > intervalTime)
         {
-            // 随机时间后激活风
+            // 到时间后刮风
             isWindOn = true;
             timer = 0.0f;
-            isLeftWind = Random.Range(0, 2) == 0; // 随机风向
+            isLeftWind = Random.Range(0, 2) == 0; // 随机方向
 
             // 显示对应风效果
             if (isLeftWind)
@@ -131,21 +167,18 @@ public class LevelController : MonoBehaviour
 
         if (isWindOn && timer > windStayTime)
         {
-            // 风持续一段时间后关闭
+            // 持续一段时间后关闭
             isWindOn = false;
             timer = 0.0f;
-            intervalTime = Random.Range(1.0f, 5.0f); // 随机下一次风的间隔
+            intervalTime = Random.Range(1.0f, 5.0f); // 随机下一次间隔
 
-            // 隐藏风效果
-            //leftWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
-            //rightWindEffect.transform.GetComponent<DOTweenAnimation>().DORewind();
             leftWindEffect?.SetActive(false);
             rightWindEffect?.SetActive(false);
         }
     }
 
     /// <summary>
-    /// 处理第二关逻辑（闪电系统）
+    /// 处理第二关逻辑系统
     /// </summary>
     private void HandleLevel2Logic()
     {
@@ -154,7 +187,7 @@ public class LevelController : MonoBehaviour
             lightningTimer += Time.deltaTime;
             if (lightningTimer >= lightningInterval)
             {
-                // 预警开始，重置闪电生效状态
+                // 预警开始，进入闪电准备阶段
                 isLightningActive = false;
                 isWarning = true;
                 warningTimer = 0;
@@ -166,33 +199,34 @@ public class LevelController : MonoBehaviour
             warningTimer += Time.deltaTime;
             if (warningTimer >= lightningWarningTime)
             {
-                // 闪电生效，设置状态为true
+                // 闪电效果开始，设置状态为true
                 isLightningActive = true;
                 StrikeLightning();
                 isWarning = false;
                 lightningTimer = 0;
 
-                // 启动协程，在闪电持续时间后重置状态
+                // 协程：闪电结束后恢复状态
                 StartCoroutine(DeactivateLightningAfterDelay(lightningDuration));
             }
         }
 
         if (reverseTimer > reverseIntervalTime)
         {
-            // show up some sprites event
+            // 触发反转控制事件
             bs.ReversCurBubbleControl();
             reverseTimer = 0.0f;
         }
 
         if (bs.IsCurReversing() && reverseTimer > reverseStayTime)
         {
-            // show up some sprites event
+            // 恢复正常控制
             bs.RecoverCurBubbleControl();
             reverseTimer = 0.0f;
         }
+
     }
 
-    // 新增协程：闪电持续时间后重置生效状态
+    // 协程：闪电结束后延迟恢复状态
     IEnumerator DeactivateLightningAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -200,7 +234,7 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 获取当前风力（仅第一关有效）
+    /// 获取当前风力（第一关）
     /// </summary>
     public Vector2 GetWindForce()
     {
@@ -234,12 +268,11 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private void GenerateLightningPositions()
     {
-        // 先清除旧的预警
-
+        // 清理旧位置和预警
         lightningPositions.Clear();
         for (int i = 0; i < 3; i++)
         {
-            // 生成随机位置
+            // 随机生成位置
             float x = Random.Range(lightningAreaMin.x, lightningAreaMax.x);
             float y = Random.Range(lightningAreaMin.y, lightningAreaMax.y);
             Vector2 pos = new Vector2(x, y);
@@ -258,13 +291,13 @@ public class LevelController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("预警预制体缺少LightningWarning组件！");
+                    Debug.LogError("预警预制体缺少LightningWarning组件");
                     Destroy(warningObj);
                 }
             }
             else
             {
-                Debug.LogError("请给LevelController赋值warningPrefab！");
+                Debug.LogError("请在LevelController中赋值warningPrefab");
             }
         }
     }
@@ -284,7 +317,7 @@ public class LevelController : MonoBehaviour
             }
 
         }
-        // 清理所有预警对象
+        // 清理所有预警
         foreach (var warning in activeWarnings)
         {
             if (warning != null)
@@ -317,12 +350,12 @@ public class LevelController : MonoBehaviour
                 break;
         }
     }
+
     public void ChangeLevel(Level lvl)
     {
-        // 关卡切换逻辑（如面板切换、状态重置等）
+        // 关卡切换逻辑：清理当前关卡状态等
         ExitLevel(curLevel);
         curLevel = lvl;
         EnterLevel(curLevel);
-
     }
 }
