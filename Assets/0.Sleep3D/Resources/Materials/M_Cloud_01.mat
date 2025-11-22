@@ -21,8 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Cloud_01
-  m_Shader: {fileID: -6465566751694194690, guid: 4613de7ffca4c704e8c5bcb015fced6a,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 4613de7ffca4c704e8c5bcb015fced6a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
